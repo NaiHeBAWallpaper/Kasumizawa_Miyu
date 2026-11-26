@@ -9,6 +9,8 @@ let renderTimer;
 let spineData;
 
 let customScale = 1;
+let positionX = 0;
+let positionY = 0;
 let targetFps = 60;
 let bgmfile = './assets/audio/Cotton Candy Island.flac';
 let bgmvolume = 0;
@@ -32,7 +34,17 @@ let flipped = false;
 let transpose = 1;
 
 let currentTracks = []; // 跟踪当前播放的音频
-window.selectedLanguage = 'Japanese'; // 全局语言变量（挂载到window对象）
+let interfaceLanguage = 'default';
+let steamLanguage = '';
+let subtitleLanguagePreference = 'auto';
+window.selectedLanguage = 'English';
+const subtitleLocales = {
+	English: 'en',
+	Chinese: 'zh-Hans',
+	TraditionalChinese: 'zh-Hant',
+	Japanese: 'ja',
+	Korean: 'ko'
+};
 
 const CHARACTER = 'CH0145';
 let modelResolution = '8k';
@@ -44,7 +56,7 @@ const HAS_A = { eye: false, point: true };
 
 const AUDIO_DETAIL = [
 	{ 
-		dialog: { 
+		dialog: {
 				Japanese: [ 
 					"呼吸を整えて…… 目標に、集中……。", 
 					"距離1,150m、風は東北東から15ノット…… 温湿度による 誤差を補正……" 
@@ -56,11 +68,19 @@ const AUDIO_DETAIL = [
 				Chinese: [ 
 					"调整呼吸……专注目标……。", 
 					"距离1150m，风速东北偏东 15 节…… 修正温度、湿度引起的误差……" 
-				] 
+				],
+				TraditionalChinese: [
+					"調整呼吸……專注目標……。",
+					"距離1150m，風速東北偏東 15 節…… 修正溫度、溼度引起的誤差……"
+				],
+				Korean: [
+					"숨을 쉬고 목표에 집중해",
+					"거리는 1,150미터, 바람은 동북부에서 15개의 노드입니다."
+				]
 			} 
 	},
 	{ 
-		dialog: { 
+		dialog: {
 				Japanese: [ 
 					"あ、あの……先生、できれば その、そういった悪戯はご遠慮いただけますと……", 
 					"えっと、照準が乱れてしまうので……" 
@@ -72,11 +92,19 @@ const AUDIO_DETAIL = [
 				Chinese: [ 
 					"那、那个……老师，如果可以的话，请不要做那样的恶作剧……", 
 					"那个，因为会干扰到瞄准……" 
-				] 
+				],
+				TraditionalChinese: [
+					"那，那個……老師，可以的話，那種惡作劇麻煩請停下來……",
+					"那個，會讓我沒辦法瞄準的……"
+				],
+				Korean: [
+					"저, 저기…… 선생님. 괜찮으시다면, 그런 장난을 치는 건 그만둬 주지 않으실래요…….",
+					"그게, 조준점이 흐트러지는데요……"
+				]
 			} 
 	},
 	{ 
-		dialog: { 
+		dialog: {
 				Japanese: [ 
 					"……なるほど。これは邪魔ではなく、実践に近い状況下での狙撃訓練、ということですよね……", 
 					"SRTでも、似たような訓練をしたような気が……" 
@@ -88,11 +116,19 @@ const AUDIO_DETAIL = [
 				Chinese: [ 
 					"……原来如此。这不是妨碍是在接近实践的情况下进行狙击训练吧……", 
 					"好像在SRT也进行了类似的训练……" 
-				] 
+				],
+				TraditionalChinese: [
+					"……原來如此。這不是妨礙是在接近實踐的情況下進行狙擊訓練吧……",
+					"在SRT，好像也有類似的訓練……"
+				],
+				Korean: [
+					"난 방해가 아냐?",
+					"SRT에서도 비슷한 훈련을 했던 것 같은 기분이……"
+				]
 			} 
 	},
 	{ 
-		dialog: { 
+		dialog: {
 				Japanese: [ 
 					"ひゃぅっ……！？", 
 					"せ、先生……！いくら何でも、耳に息を吹きかけるのは……！？" 
@@ -104,11 +140,19 @@ const AUDIO_DETAIL = [
 				Chinese: [ 
 					"啊……！？", 
 					"老师……！不管怎么说，在耳朵边吹气的是……！？" 
-				] 
+				],
+				TraditionalChinese: [
+					"噫噫……！？",
+					"老，老師……！就算這樣，在耳邊吹氣也有點……！？"
+				],
+				Korean: [
+					"흐, 흐익……?",
+					"서, 선생님……! 아무리 그래도, 귀에 입김을 불어 넣는 건……!?"
+				]
 			} 
 	},
 	{ 
-		dialog: { 
+		dialog: {
 				Japanese: [ 
 					"（うぅ……せ、先生の吐息が、この距離で……）", 
 					"（しょ、照準がぶれるっ……！）" 
@@ -120,7 +164,15 @@ const AUDIO_DETAIL = [
 				Chinese: [ 
 					"（呜呜……老，老师的呼吸，在这样的距离……）", 
 					"（瞄、瞄准要偏掉了……！）" 
-				] 
+				],
+				TraditionalChinese: [
+					"（唔……老，老師的呼吸靠得好近……）",
+					"（沒，沒辦法瞄準……！）"
+				],
+				Korean: [
+					"(으으…… 서, 선생님의 숨결이, 가까이에서……)",
+					"(조, 조준이 흔들려……!)"
+				]
 			} 
 	}
 ];
@@ -305,7 +357,8 @@ function drawHitboxes() {
 		n = (n / transpose) - (d[side].length / (transpose * 2));
 		n = n * customScale + (d[side].length / (transpose * 2));
 		n = (d[side].length / (transpose * 2)) - n;
-		return d[side].mid - n;
+		const offset = side === 'x' ? canvas.width * positionX : canvas.height * positionY;
+		return d[side].mid - n + offset;
 	}
 
 	for (const key in HITBOX) {
@@ -398,12 +451,45 @@ function setMouse(event) {
 		ax = canvas.width - ax;
 	}
 
-	return { x: ax, y: ay }
+	return { x: ax - canvas.width * positionX, y: ay - canvas.height * positionY };
+}
+
+function updateSubtitleLanguage() {
+	let language = subtitleLanguagePreference;
+	if (language === 'auto') {
+		const locale = interfaceLanguage === 'default' ? steamLanguage : interfaceLanguage;
+		const [primary, region] = locale.split(/[-_]/);
+		if (primary === 'tchinese' || (primary === 'zh' && ['cht', 'hant', 'tw', 'hk', 'mo'].includes(region))) {
+			language = 'TraditionalChinese';
+		} else if (primary === 'schinese' || primary === 'zh') {
+			language = 'Chinese';
+		} else if (primary === 'ja' || primary === 'japanese') {
+			language = 'Japanese';
+		} else if (primary === 'ko' || primary === 'korean' || primary === 'koreana') {
+			language = 'Korean';
+		} else {
+			language = 'English';
+		}
+	}
+
+	if (language === window.selectedLanguage) return;
+	window.selectedLanguage = language;
+	textbox.lang = subtitleLocales[language];
+	const clip = currentTracks.at(-1);
+	if (dialogBox && clip) textbox.textContent = clip.dialog[language][clip.index];
 }
 
 function init() {
 	// Wallpaper Engine settings
 	window.wallpaperPropertyListener = {
+		applyGeneralProperties: (props) => {
+			const language = props.language?.value ?? props.language;
+			const steamLocale = props.steamlanguage?.value ?? props.steamlanguage;
+			if (typeof language !== 'string' && typeof steamLocale !== 'string') return;
+			if (typeof language === 'string') interfaceLanguage = language.toLowerCase();
+			if (typeof steamLocale === 'string') steamLanguage = steamLocale.toLowerCase();
+			updateSubtitleLanguage();
+		},
 		applyUserProperties: (props) => {
 			if (props.schemecolor) {
 				bufferColor = props.schemecolor.value.split(" ");
@@ -412,8 +498,16 @@ function init() {
 			if (props.scale) {
 				customScale = props.scale.value;
 				document.documentElement.style.setProperty('--wallpaper-scale', customScale);
-				resize();
 			}
+			if (props.positionx) {
+				positionX = props.positionx.value / 100;
+				document.documentElement.style.setProperty('--wallpaper-position-x', props.positionx.value + 'vw');
+			}
+			if (props.positiony) {
+				positionY = props.positiony.value / 100;
+				document.documentElement.style.setProperty('--wallpaper-position-y', props.positiony.value + 'vh');
+			}
+			if (props.scale || props.positionx || props.positiony) resize();
 			if (props.targetfps) targetFps = props.targetfps.value;
 
 			if (props.introanimation) introAnimation = props.introanimation.value;
@@ -421,7 +515,7 @@ function init() {
 				const selected = props.modelresolution.value;
 				if (['2k', '4k', '8k'].includes(selected)) modelResolution = selected;
 			}
-			requestModelResolution();
+			requestModelResolution(Boolean(props.modelresolution));
 
 			if (props.mousetracking) mouseOptions.mousetracking = props.mousetracking.value;
 			if (props.headpatting) mouseOptions.headpatting = props.headpatting.value;
@@ -432,14 +526,10 @@ function init() {
 			if (props.dialogy) textbox.style.top = props.dialogy.value + '%';
 			if (props.drawHitboxes) mouseOptions.drawHitboxes = props.drawHitboxes.value;
 
-			// 新增：监听语言选择
 			if (props.dialoglanguage) {
-				window.selectedLanguage = props.dialoglanguage.value; // 更新全局语言变量
-				// 更新当前播放的音频文本
-				const clip = currentTracks[currentTracks.length - 1];
-				if (dialogBox && clip) {
-					textbox.textContent = clip.dialog[window.selectedLanguage][clip.index];
-				}
+				const language = props.dialoglanguage.value;
+				subtitleLanguagePreference = Object.hasOwn(subtitleLocales, language) ? language : 'auto';
+				updateSubtitleLanguage();
 			}
 			
 			if (props.bgmfile) {
@@ -462,6 +552,7 @@ function init() {
 	};
 
 	textbox = document.getElementById('textbox');
+	textbox.lang = subtitleLocales[window.selectedLanguage];
 
 	canvas = document.getElementById('canvas');
 	canvas.addEventListener('mouseleave', releaseHeadpatOnExit);
@@ -492,6 +583,7 @@ function init() {
 		if (typeof introAnimation === 'undefined') introAnimation = true;
 		requestModelResolution();
 	}, 350);
+	window.addEventListener('resize', resize);
 	window.addEventListener('pagehide', event => {
 		if (event.persisted) return;
 		canvas.style.visibility = 'hidden';
@@ -540,8 +632,8 @@ function interactionLoad() {
 	return 1;
 }
 
-function requestModelResolution() {
-	if (!assetManager || modelFrame || typeof introAnimation === 'undefined' || loadingResolution === modelResolution) return;
+function requestModelResolution(force = false) {
+	if (!assetManager || modelFrame || typeof introAnimation === 'undefined' || (!force && loadingResolution === modelResolution)) return;
 	loadingResolution = modelResolution;
 	const directory = loadingResolution === '8k' ? 'assets/' : 'assets/' + loadingResolution + '/';
 	const models = [CHARACTER + '_home'];
@@ -729,9 +821,12 @@ function render() {
 function resize() {
 	let w = canvas.clientWidth;
 	let h = canvas.clientHeight;
+	if (w === 0 || h === 0) return;
 	if (canvas.width != w || canvas.height != h) {
 		canvas.width = w;
 		canvas.height = h;
+		overlay.width = w;
+		overlay.height = h;
 	}
 
 	// Set values to position skeleton to center of canvas.
@@ -757,7 +852,7 @@ function resize() {
 		transpose = 1600 / canvas.height;
 	}
 
-	mvp.ortho2d(centerX - width / 2, centerY - height / 2, width, height);
+	mvp.ortho2d(centerX - width / 2 - positionX * width, centerY - height / 2 + positionY * height, width, height);
 	gl.viewport(0, 0, canvas.width, canvas.height);
 }
 
