@@ -43,7 +43,8 @@ const subtitleLocales = {
 	Chinese: 'zh-Hans',
 	TraditionalChinese: 'zh-Hant',
 	Japanese: 'ja',
-	Korean: 'ko'
+	Korean: 'ko',
+	Thai: 'th'
 };
 
 const CHARACTER = 'CH0145';
@@ -58,31 +59,32 @@ const AUDIO_DETAIL = [
 	{ 
 		dialog: {
 				Japanese: [ 
-					"呼吸を整えて…… 目標に、集中……。", 
-					"距離1,150m、風は東北東から15ノット…… 温湿度による 誤差を補正……" 
+					"呼吸を整えて……目標に、集中……。", 
+					"距離1,150m、風は東北東から15ノット……温湿度による誤差を補正……" 
 				], 
 				English: [ 
 					"Phew... Take a breath... Focus on the target...", 
 					"The distance is 1,150 meters...wind is from the northeast, fifteen knots. If I correct the error caused by temperature and humidity..." 
 				], 
 				Chinese: [ 
-					"调整呼吸……专注目标……。", 
-					"距离1150m，风速东北偏东 15 节…… 修正温度、湿度引起的误差……" 
+					"调整呼吸……专注在目标上……", 
+					"目标距离1150米，风向东北偏东，风速15节……修正温度与湿度导致的误差……" 
 				],
 				TraditionalChinese: [
-					"調整呼吸……專注目標……。",
-					"距離1150m，風速東北偏東 15 節…… 修正溫度、溼度引起的誤差……"
+					"調整呼吸……專注於目標……",
+					"距離1,150m，風向為東北東，風速15節……矯正溫濕度產生的誤差……"
 				],
 				Korean: [
-					"숨을 쉬고 목표에 집중해",
-					"거리는 1,150미터, 바람은 동북부에서 15개의 노드입니다."
-				]
+					"호흡을 가다듬고…… 목표에 집중……",
+					"거리는 1,150m, 바람은 동북동에서 15노트. 온습도로 인한 오차를 보정하면……"
+				],
+				Thai: ["ควบคุมลมหายใจ... ตั้งสมาธิ... เล็งไปที่เป้าหมาย...","ระยะห่าง 1,150 เมตร ความเร็วลมจากทาง ตะวันออกเฉียงเหนือ 15 น็อต ถ้าคำนวณความคลาดเคลื่อน... จากอุณหภูมิและความชื้นแล้ว..."]
 			} 
 	},
 	{ 
 		dialog: {
 				Japanese: [ 
-					"あ、あの……先生、できれば その、そういった悪戯はご遠慮いただけますと……", 
+					"あ、あの……先生、できればその、そういった悪戯はご遠慮いただけますと……", 
 					"えっと、照準が乱れてしまうので……" 
 				], 
 				English: [ 
@@ -90,8 +92,8 @@ const AUDIO_DETAIL = [
 					"That's...! I can't focus on aiming..." 
 				], 
 				Chinese: [ 
-					"那、那个……老师，如果可以的话，请不要做那样的恶作剧……", 
-					"那个，因为会干扰到瞄准……" 
+					"请，请问……老师。您可不可以，暂时先不要开玩笑了……？", 
+					"我，我的瞄准点一直在晃动……" 
 				],
 				TraditionalChinese: [
 					"那，那個……老師，可以的話，那種惡作劇麻煩請停下來……",
@@ -100,7 +102,8 @@ const AUDIO_DETAIL = [
 				Korean: [
 					"저, 저기…… 선생님. 괜찮으시다면, 그런 장난을 치는 건 그만둬 주지 않으실래요…….",
 					"그게, 조준점이 흐트러지는데요……"
-				]
+				],
+				Thai: ["คะ... คือว่า...คุณครูคะ ช่วยเลิกแกล้งฉันก่อน ได้รึเปล่าคะ...?","จุดที่เล็งเป้ายิง มันสั่นไปหมดแล้วค่ะ..."]
 			} 
 	},
 	{ 
@@ -114,17 +117,18 @@ const AUDIO_DETAIL = [
 					"I think w-we did this at SRT..." 
 				], 
 				Chinese: [ 
-					"……原来如此。这不是妨碍是在接近实践的情况下进行狙击训练吧……", 
-					"好像在SRT也进行了类似的训练……" 
+					"……是，是这样吗。原来这不是恶作剧，是在帮我在更接近实战的情况下，进行狙击训练。", 
+					"我记得在SRT也做过类似的训练……" 
 				],
 				TraditionalChinese: [
-					"……原來如此。這不是妨礙是在接近實踐的情況下進行狙擊訓練吧……",
+					"……原來如此。這不是妨礙，而是要在接近實戰的狀況下進行狙擊訓練對吧……",
 					"在SRT，好像也有類似的訓練……"
 				],
 				Korean: [
-					"난 방해가 아냐?",
+					"……그렇군요. 이건 방해가 아니라, 실전에 가까운 상황에서의 저격을 위한 훈련이군요.",
 					"SRT에서도 비슷한 훈련을 했던 것 같은 기분이……"
-				]
+				],
+				Thai: ["งั้นเหรอคะ... มันก็ไม่ได้ กวนอะไรมากหรอกค่ะ คงอยากให้เป็นการฝึกซุ่มยิง ในสถานการณ์ที่ใกล้เคียงกับ การต่อสู้จริงสินะคะ","ที่ SRT เองเคยผ่านการฝึก ที่คล้ายกันมาเหมือนกันค่ะ"]
 			} 
 	},
 	{ 
@@ -138,8 +142,8 @@ const AUDIO_DETAIL = [
 					"S-Sensei...! Y-You're b-b-breathing in m-my ear...!!" 
 				], 
 				Chinese: [ 
-					"啊……！？", 
-					"老师……！不管怎么说，在耳朵边吹气的是……！？" 
+					"呀啊……？", 
+					"老，老师……！就算这样， 往，往我耳朵里吹气也太……？！" 
 				],
 				TraditionalChinese: [
 					"噫噫……！？",
@@ -148,7 +152,8 @@ const AUDIO_DETAIL = [
 				Korean: [
 					"흐, 흐익……?",
 					"서, 선생님……! 아무리 그래도, 귀에 입김을 불어 넣는 건……!?"
-				]
+				],
+				Thai: ["อะ...อ๊าย...!","คะ...คุณครูคะ! ยะ...ยังไงก็เถอะค่ะ มะ...มาหายใจข้างๆ หูกันแบบนี้...!?"]
 			} 
 	},
 	{ 
@@ -162,17 +167,18 @@ const AUDIO_DETAIL = [
 					"(I-I can't aim...)" 
 				], 
 				Chinese: [ 
-					"（呜呜……老，老师的呼吸，在这样的距离……）", 
-					"（瞄、瞄准要偏掉了……！）" 
+					"（呜呜……老，老师的呼吸，就在耳边……）", 
+					"（没，没办法瞄准了……）" 
 				],
 				TraditionalChinese: [
-					"（唔……老，老師的呼吸靠得好近……）",
-					"（沒，沒辦法瞄準……！）"
+					"（唔……老，老師的　呼吸靠得好近……）",
+					"（沒，沒辦法　瞄準……！）"
 				],
 				Korean: [
 					"(으으…… 서, 선생님의 숨결이, 가까이에서……)",
 					"(조, 조준이 흔들려……!)"
-				]
+				],
+				Thai: ["(ฮือออ... ละ...ลมหายใจของคุณครู... อยู่ใกล้มากๆ เลย...)","(จะ...จุดเล็งเป้าเคลื่อนแล้ว…!)"]
 			} 
 	}
 ];
@@ -284,7 +290,7 @@ function playVoiceline() {
 			track.play().catch(finish);
 
 			if (dialogBox) {
-				textbox.textContent = dialog[window.selectedLanguage][index];
+				textbox.textContent = getSubtitleText(dialog, window.selectedLanguage, index);
 				textbox.style.opacity = 1;
 			}
 		},
@@ -454,6 +460,16 @@ function setMouse(event) {
 	return { x: ax - canvas.width * positionX, y: ay - canvas.height * positionY };
 }
 
+function getSubtitleText(dialog, language, index) {
+	let text = dialog?.[language]?.[index];
+	if (text == null && language === 'Thai') {
+		language = 'English';
+		text = dialog?.[language]?.[index];
+	}
+	textbox.lang = subtitleLocales[language];
+	return text ?? "";
+}
+
 function updateSubtitleLanguage() {
 	let language = subtitleLanguagePreference;
 	if (language === 'auto') {
@@ -467,6 +483,8 @@ function updateSubtitleLanguage() {
 			language = 'Japanese';
 		} else if (primary === 'ko' || primary === 'korean' || primary === 'koreana') {
 			language = 'Korean';
+		} else if (primary === 'th' || primary === 'thai') {
+			language = 'Thai';
 		} else {
 			language = 'English';
 		}
@@ -476,7 +494,7 @@ function updateSubtitleLanguage() {
 	window.selectedLanguage = language;
 	textbox.lang = subtitleLocales[language];
 	const clip = currentTracks.at(-1);
-	if (dialogBox && clip) textbox.textContent = clip.dialog[language][clip.index];
+	if (dialogBox && clip) textbox.textContent = getSubtitleText(clip.dialog, language, clip.index);
 }
 
 function init() {
